@@ -17,16 +17,6 @@
    limitations under the License.
 */
 
-var oauth2token_ = '';
-
-function setOAuth2AccessToken(token) {
-  oauth2token_ = token;
-}
-
-function getOAuth2AccessToken() {
-  return oauth2token_;
-}
-
 /**
  * Creates a new shared contact.
  *
@@ -125,14 +115,11 @@ function getContactById(loginId) {
 function profilesRequest_(method, query, url) {
   if (this.traceRequests && this.loggerFunction) {this.loggerFunction('profilesRequest_ request: \nmethod: %s, \nquery: %s, \nurl: %s', method||'',query||'',url||'');}
   var user = Session.getEffectiveUser().getEmail();
-  // var user = Session.getActiveUser().getEmail();
   var domain = user.substring(user.indexOf('@')+1);
   var base = "https://www.google.com/m8/feeds/contacts/" + domain + "/full/";
-  //var fetchArgs = googleOAuth_();
-  //*** NEW for OAuth2 and remove the headers above and comment out the above: var fetchArgs = googleOAuth_();
   var fetchArgs = {};
   fetchArgs.headers = {
-    Authorization: 'Bearer ' + oauth2token_
+    Authorization: 'Bearer ' + ScriptApp.getOAuthToken()
   };
   fetchArgs.headers['If-Match'] = '*';
   fetchArgs.headers['GData-Version'] = '3.0';
@@ -204,19 +191,6 @@ function findUrlToUpdateElement_(element) {
     }
   }
   return url;
-}
-
-function googleOAuth_() {
-  var oAuthConfig = UrlFetchApp.addOAuthService('Profiles');
-  oAuthConfig.setRequestTokenUrl('https://www.google.com/accounts/OAuthGetRequestToken?scope=https://www.google.com/m8/feeds/');
-  oAuthConfig.setAuthorizationUrl('https://www.google.com/accounts/OAuthAuthorizeToken');
-  oAuthConfig.setAccessTokenUrl('https://www.google.com/accounts/OAuthGetAccessToken');
-  oAuthConfig.setConsumerKey('anonymous');
-  oAuthConfig.setConsumerSecret('anonymous');
-  return {
-    oAuthServiceName: 'Profiles',
-    oAuthUseToken: 'always'
-  };
 }
 
 /*
