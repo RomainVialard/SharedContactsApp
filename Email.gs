@@ -49,29 +49,29 @@ emailClass.getAddress = function () {
 };
 emailClass.setAddress = function (text) {
   text = encodeHtml_(text);
-  if (this.getAddress() === text) {return this;}
+  if (this.getAddress() === text) { return this; }
   var linkUrl = findUrlToUpdateElement_(this.parent.profile);
-  var oldEntry = 'address="' + encodeHtml_(this.email.getAttribute('address').getValue()); 
+  var oldEntry = 'address="' + encodeHtml_(this.email.getAttribute('address').getValue());
   var newEntry = 'address="' + text;
   var xmlOutput = profilesRequest_('put', this.parent.profile.toXmlString().replace(oldEntry, newEntry), linkUrl);
   this.parent.profile = reGetProfileXml_(this.parent.getId(), xmlOutput.getElement());
-  this.email = Xml.parse(this.email.toXmlString().replace(oldEntry, newEntry)).getElement(); 
+  this.email = Xml.parse(this.email.toXmlString().replace(oldEntry, newEntry)).getElement();
   return this;
 };
 emailClass.getLabel = function () {
   var label = this.email.getAttribute('rel');
-  if(label == null) return '';
+  if (label == null) return '';
   label = label.getValue();
   label = Frels.email[label] || ContactsApp.Field.WORK_EMAIL;
   return label;
 };
 emailClass.setLabel = function (label) {
   var linkUrl = findUrlToUpdateElement_(this.parent.profile);
-  var oldEntry = '<gd:email address="'+ this.email.getAttribute('address').getValue() +'" rel="' + this.email.getAttribute('rel').getValue() + '"/>';
+  var oldEntry = '<gd:email address="' + this.email.getAttribute('address').getValue() + '" rel="' + this.email.getAttribute('rel').getValue() + '"/>';
   var rel = Frels.email[label] || Frels.email[ContactsApp.Field.WORK_EMAIL];
-  var newEntry = '<gd:email address="'+ this.email.getAttribute('address').getValue() +'" rel="' + rel + '"/>';
-  var xmlOutput = profilesRequest_('put', this.parent.profile.toXmlString().replace(oldEntry, newEntry), linkUrl); 
+  var newEntry = '<gd:email address="' + this.email.getAttribute('address').getValue() + '" rel="' + rel + '"/>';
+  var xmlOutput = profilesRequest_('put', this.parent.profile.toXmlString().replace(oldEntry, newEntry), linkUrl);
   this.parent.profile = reGetProfileXml_(this.parent.getId(), xmlOutput.getElement(), xmlOutput.getElement());
-  this.email = Xml.parse(this.email.toXmlString().replace(this.email.getAttribute('rel').getValue(),rel)).getElement(); 
+  this.email = Xml.parse(this.email.toXmlString().replace(this.email.getAttribute('rel').getValue(), rel)).getElement();
   return this;
 };

@@ -48,9 +48,9 @@ phoneClass.getPhoneNumber = function () {
 };
 // to be fixed
 phoneClass.setPhoneNumber = function (text) {
-  if (text === '') {return this.deletePhoneField();}
+  if (text === '') { return this.deletePhoneField(); }
   text = encodeHtml_(text);
-  if (this.getPhoneNumber() === text) {return this;}
+  if (this.getPhoneNumber() === text) { return this; }
   var linkUrl = findUrlToUpdateElement_(this.parent.profile);
   var oldEntry = this.phone.toXmlString().replace(xmlHeader, '').replace(xmlnsGd, '');
   var newEntry = this.phone.toXmlString().replace(xmlHeader, '').replace(encodeHtml_(this.phone.getText()), text);
@@ -61,18 +61,18 @@ phoneClass.setPhoneNumber = function (text) {
 };
 phoneClass.getLabel = function () {
   var label = this.phone.getAttribute('rel');
-  if(label == null) return '';
+  if (label == null) return '';
   label = label.getValue();
   label = Frels.phone[label] || ContactsApp.Field.WORK_PHONE;
   return label;
 };
 phoneClass.setLabel = function (label) {
   var linkUrl = findUrlToUpdateElement_(this.parent.profile);
-  var oldEntry = '<gd:phoneNumber rel="' + this.phone.getAttribute('rel').getValue() + '">'+this.phone.getText()+'</gd:phoneNumber>';
+  var oldEntry = '<gd:phoneNumber rel="' + this.phone.getAttribute('rel').getValue() + '">' + this.phone.getText() + '</gd:phoneNumber>';
   var rel = Frels.phone[label] || Frels.phone[ContactsApp.Field.WORK_PHONE];
-  var newEntry = '<gd:phoneNumber rel="' + rel + '">'+this.phone.getText()+'</gd:phoneNumber>';
+  var newEntry = '<gd:phoneNumber rel="' + rel + '">' + this.phone.getText() + '</gd:phoneNumber>';
   var xmlOutput = profilesRequest_('put', this.parent.profile.toXmlString().replace(oldEntry, newEntry), linkUrl);
   this.parent.profile = reGetProfileXml_(this.parent.getId(), xmlOutput.getElement());
-  this.phone = Xml.parse(this.phone.toXmlString().replace(this.phone.getAttribute('rel').getValue(),rel)).getElement(); //note this is diff way to the put
+  this.phone = Xml.parse(this.phone.toXmlString().replace(this.phone.getAttribute('rel').getValue(), rel)).getElement(); //note this is diff way to the put
   return this;
 };

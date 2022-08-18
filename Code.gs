@@ -25,7 +25,7 @@
  * @param  {string} emailAddress the email address of the contact
  * @return {Contact} newly created Contact object 
  */
-function createContact(firstName, lastName, emailAddress){
+function createContact(firstName, lastName, emailAddress) {
   firstName = encodeHtml_(firstName);
   lastName = encodeHtml_(lastName);
   emailAddress = emailAddress.replace(/'/g, '&apos;');
@@ -37,7 +37,7 @@ function createContact(firstName, lastName, emailAddress){
      <gd:fullName>" + firstName + " " + lastName + "</gd:fullName></gd:name>\
     <gd:email rel='http://schemas.google.com/g/2005#work' primary='true' address='" + emailAddress + "' /></atom:entry>";
   var xmlOutput = profilesRequest_('post', newEntry, '');
-  return new ProfilesApp.profile(xmlOutput.getElement()); 
+  return new ProfilesApp.profile(xmlOutput.getElement());
 }
 
 /**
@@ -71,7 +71,7 @@ function getContacts() {
 * @return {contacts[]} the shared contacts requested and the next token
 */
 function getContactsForPaging(optToken) {
-  if(optToken == undefined) var xmlOutput = profilesRequest_('get', '');
+  if (optToken == undefined) var xmlOutput = profilesRequest_('get', '');
   else var xmlOutput = profilesRequest_('get', '', optToken);
   var temp = xmlOutput.getElement().getElements('entry');
   var profiles = [];
@@ -105,17 +105,17 @@ tokenClass.getContacts = function () {
  */
 function getContactById(loginId) {
   var user = loginId;
-  if(user.indexOf('@') != -1) user = loginId.substring(0, loginId.indexOf('@'));
+  if (user.indexOf('@') != -1) user = loginId.substring(0, loginId.indexOf('@'));
   var xmlOutput = profilesRequest_('get', user);
-  if(xmlOutput == null) return null;
+  if (xmlOutput == null) return null;
   return new ProfilesApp.profile(xmlOutput.getElement());
 }
- 
+
 /* - - - - - - - Utilities - - - - - - - */
 function profilesRequest_(method, query, url) {
-  if (this.traceRequests && this.loggerFunction) {this.loggerFunction('profilesRequest_ request: \nmethod: %s, \nquery: %s, \nurl: %s', method||'',query||'',url||'');}
+  if (this.traceRequests && this.loggerFunction) { this.loggerFunction('profilesRequest_ request: \nmethod: %s, \nquery: %s, \nurl: %s', method || '', query || '', url || ''); }
   var user = Session.getEffectiveUser().getEmail();
-  var domain = user.substring(user.indexOf('@')+1);
+  var domain = user.substring(user.indexOf('@') + 1);
   var base = "https://www.google.com/m8/feeds/contacts/" + domain + "/full/";
   var fetchArgs = {};
   fetchArgs.headers = {
@@ -129,20 +129,20 @@ function profilesRequest_(method, query, url) {
       if (query.indexOf('@') != -1) {
         //new multidomain support
         var queryUser = query.substring(0, query.indexOf('@'));
-        var queryDomain = query.substring(query.indexOf('@')+1);
+        var queryDomain = query.substring(query.indexOf('@') + 1);
         url = base.replace(domain, queryDomain) + queryUser;
       } else {
         url = base + query;
       }
     }
-    else if(url.indexOf('feeds/photos') != -1) {
-      try{
+    else if (url.indexOf('feeds/photos') != -1) {
+      try {
         var result = UrlFetchApp.fetch(url, fetchArgs);
       }
-      catch(e){
+      catch (e) {
         return null;
       }
-      if (this.traceRequests && this.loggerFunction) {this.loggerFunction('profilesRequest_ response: blob');}
+      if (this.traceRequests && this.loggerFunction) { this.loggerFunction('profilesRequest_ response: blob'); }
       return result.getBlob();
     }
   }
@@ -161,14 +161,14 @@ function profilesRequest_(method, query, url) {
     fetchArgs.payload = query;
   }
   else if (method == 'delete') {
-    if (this.traceRequests && this.loggerFunction) {this.loggerFunction('profilesRequest_ response: delete response code');}
+    if (this.traceRequests && this.loggerFunction) { this.loggerFunction('profilesRequest_ response: delete response code'); }
     return UrlFetchApp.fetch(url, fetchArgs).getResponseCode();
   }
-  var fetch = gasCall_(function(){return UrlFetchApp.fetch(url, fetchArgs);});
-  if(fetch == null) return null;
+  var fetch = gasCall_(function () { return UrlFetchApp.fetch(url, fetchArgs); });
+  if (fetch == null) return null;
   var data = fetch.getContentText();
   var xmlOutput = Xml.parse(data, false);
-  if (this.traceRequests && this.loggerFunction) {this.loggerFunction('profilesRequest_ responseCode: %s, \nresponse: %s', fetch.getResponseCode(), xmlOutput.toXmlString());}
+  if (this.traceRequests && this.loggerFunction) { this.loggerFunction('profilesRequest_ responseCode: %s, \nresponse: %s', fetch.getResponseCode(), xmlOutput.toXmlString()); }
   return xmlOutput;
 }
 
@@ -177,10 +177,10 @@ function profilesRequest_(method, query, url) {
 * Fix for issue https://code.google.com/p/google-script-examples/issues/detail?id=27
 */
 function reGetProfileXml_(id, xmlElement) {
-  if (goFaster) {return xmlElement;}
+  if (goFaster) { return xmlElement; }
   Utilities.sleep(4000);
   var xmlOutput = profilesRequest_('get', id);
-  if(xmlOutput == null) return null;
+  if (xmlOutput == null) return null;
   return xmlOutput.getElement();
 }
 function findUrlToUpdateElement_(element) {
@@ -207,8 +207,8 @@ function gasCall_(f) {
       return f();
     }
     catch (e) {
-      if (this.traceRequests && this.loggerFunction) {this.loggerFunction('GASRetry ' + n + ': ' + e);}
-      if(e.message.indexOf('returned code 404') != -1) return null;
+      if (this.traceRequests && this.loggerFunction) { this.loggerFunction('GASRetry ' + n + ': ' + e); }
+      if (e.message.indexOf('returned code 404') != -1) return null;
       if (n == 5) {
         throw e;
       }
@@ -228,37 +228,46 @@ function gasCall_(f) {
 *         //  Get a rel value from a field, defaults to the rel value for work phone if myField is undefined
 *         //var myRel = Frels.phone[myField] || Frels.phone[ContactsApp.Field.WORK_PHONE];
 */
-var Frels = {'phone': {'http://schemas.google.com/g/2005#work': ContactsApp.Field.WORK_PHONE,  
-                       'WORK_PHONE': 'http://schemas.google.com/g/2005#work',
-                       'http://schemas.google.com/g/2005#work_fax': ContactsApp.Field.WORK_FAX,
-                       'WORK_FAX': 'http://schemas.google.com/g/2005#work_fax',
-                       'http://schemas.google.com/g/2005#mobile': ContactsApp.Field.MOBILE_PHONE,
-                       'MOBILE_PHONE': 'http://schemas.google.com/g/2005#mobile',
-                       'http://schemas.google.com/g/2005#home': ContactsApp.Field.HOME_PHONE,
-                       'HOME_PHONE': 'http://schemas.google.com/g/2005#home',
-                       'http://schemas.google.com/g/2005#home_fax': ContactsApp.Field.HOME_FAX,
-                       'HOME_FAX': 'http://schemas.google.com/g/2005#home_fax'},
-             'email': {'http://schemas.google.com/g/2005#home': ContactsApp.Field.HOME_EMAIL,
-                       'HOME_EMAIL': 'http://schemas.google.com/g/2005#home',
-                       'http://schemas.google.com/g/2005#work': ContactsApp.Field.WORK_EMAIL,
-                       'WORK_EMAIL': 'http://schemas.google.com/g/2005#work'},
-             'address': {'http://schemas.google.com/g/2005#work': ContactsApp.Field.WORK_ADDRESS,
-                         'WORK_ADDRESS': 'http://schemas.google.com/g/2005#work',
-                         'http://schemas.google.com/g/2005#home': ContactsApp.Field.HOME_ADDRESS,
-                         'HOME_ADDRESS': 'http://schemas.google.com/g/2005#home'},
-             'url': {'blog': ContactsApp.Field.BLOG,
-                     'BLOG': 'blog',
-                     'ftp': ContactsApp.Field.FTP,
-                     'FTP': 'ftp',
-                     'home-page': ContactsApp.Field.HOME_PAGE,
-                     'HOME_PAGE': 'home-page',
-                     'home': ContactsApp.Field.HOME_WEBSITE,
-                     'HOME_WEBSITE': 'home',
-                     'profile': ContactsApp.Field.PROFILE,
-                     'PROFILE': 'profile',
-                     'work': ContactsApp.Field.WORK_WEBSITE,
-                     'WORK_WEBSITE': 'work'}             
-            };
+var Frels = {
+  'phone': {
+    'http://schemas.google.com/g/2005#work': ContactsApp.Field.WORK_PHONE,
+    'WORK_PHONE': 'http://schemas.google.com/g/2005#work',
+    'http://schemas.google.com/g/2005#work_fax': ContactsApp.Field.WORK_FAX,
+    'WORK_FAX': 'http://schemas.google.com/g/2005#work_fax',
+    'http://schemas.google.com/g/2005#mobile': ContactsApp.Field.MOBILE_PHONE,
+    'MOBILE_PHONE': 'http://schemas.google.com/g/2005#mobile',
+    'http://schemas.google.com/g/2005#home': ContactsApp.Field.HOME_PHONE,
+    'HOME_PHONE': 'http://schemas.google.com/g/2005#home',
+    'http://schemas.google.com/g/2005#home_fax': ContactsApp.Field.HOME_FAX,
+    'HOME_FAX': 'http://schemas.google.com/g/2005#home_fax'
+  },
+  'email': {
+    'http://schemas.google.com/g/2005#home': ContactsApp.Field.HOME_EMAIL,
+    'HOME_EMAIL': 'http://schemas.google.com/g/2005#home',
+    'http://schemas.google.com/g/2005#work': ContactsApp.Field.WORK_EMAIL,
+    'WORK_EMAIL': 'http://schemas.google.com/g/2005#work'
+  },
+  'address': {
+    'http://schemas.google.com/g/2005#work': ContactsApp.Field.WORK_ADDRESS,
+    'WORK_ADDRESS': 'http://schemas.google.com/g/2005#work',
+    'http://schemas.google.com/g/2005#home': ContactsApp.Field.HOME_ADDRESS,
+    'HOME_ADDRESS': 'http://schemas.google.com/g/2005#home'
+  },
+  'url': {
+    'blog': ContactsApp.Field.BLOG,
+    'BLOG': 'blog',
+    'ftp': ContactsApp.Field.FTP,
+    'FTP': 'ftp',
+    'home-page': ContactsApp.Field.HOME_PAGE,
+    'HOME_PAGE': 'home-page',
+    'home': ContactsApp.Field.HOME_WEBSITE,
+    'HOME_WEBSITE': 'home',
+    'profile': ContactsApp.Field.PROFILE,
+    'PROFILE': 'profile',
+    'work': ContactsApp.Field.WORK_WEBSITE,
+    'WORK_WEBSITE': 'work'
+  }
+};
 /**
 Tracing example:
    
@@ -271,11 +280,11 @@ Tracing example:
 var traceRequests = false; //set to true to invoke logging on UrlFetch requests, responses, retries and exceptions
 // loggerFunction is used if traceRequests is true. You can pass a function that will be used to log to in the case of a retry. 
 //   For example, var loggerFunction = Logger.log (no parentheses) will work.
-var loggerFunction; 
+var loggerFunction;
 //WARNING: if you set goFaster to true, profile data cannot be reused after a set or add operation because it 
 // is not reloaded with the latest data. Does not incur the 4000 millisecond time cost. 
 // Useful to quickly add/update/set/remove a single field on many profiles
-var goFaster = false; 
+var goFaster = false;
 function fixXmlns_(text) {
   // add xmlns https://code.google.com/p/google-script-examples/issues/detail?id=28
   var from = '<entry xmlns:gd="http://schemas.google.com/g/2005"';
@@ -284,18 +293,18 @@ function fixXmlns_(text) {
   return newtext;
 }
 function encodeHtml_(text) {
-  if(text || text==='') {
+  if (text || text === '') {
     return text.replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
     //.replace(/"/g, '&quot;');
     //.replace(/'/g, '&apos;'); 
   }
-//  .replace(/"/g, '&quot;') .replace(/'/g, '&apos;'); not required for xml
+  //  .replace(/"/g, '&quot;') .replace(/'/g, '&apos;'); not required for xml
 }
 function decodeHtml_(text) {
   return text.replace(/&amp;/g, '&')
-  .replace(/&gt;/g, '>')
-  .replace(/&lt;/g, '<');
-//  " and ' not required for xml because toXmlString does that
+    .replace(/&gt;/g, '>')
+    .replace(/&lt;/g, '<');
+  //  " and ' not required for xml because toXmlString does that
 }

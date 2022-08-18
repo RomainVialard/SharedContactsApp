@@ -6,7 +6,7 @@
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+   You may obtain a copy of the License at 
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -47,11 +47,11 @@ addressClass.getAddress = function () {
   return this.address.getElement(gd, 'formattedAddress').getText();
 };
 addressClass.setAddress = function (text) {
-  if (text === '') {return this.deleteAddressField();}
+  if (text === '') { return this.deleteAddressField(); }
   text = encodeHtml_(text);
-  if (this.getAddress() === text) {return this;}
+  if (this.getAddress() === text) { return this; }
   var linkUrl = findUrlToUpdateElement_(this.parent.profile);
-  var oldEntry = '<gd:formattedAddress>' +  encodeHtml_(this.address.getElement(gd, 'formattedAddress').getText()) + '</gd:formattedAddress>';
+  var oldEntry = '<gd:formattedAddress>' + encodeHtml_(this.address.getElement(gd, 'formattedAddress').getText()) + '</gd:formattedAddress>';
   var newEntry = '<gd:formattedAddress>' + text + '</gd:formattedAddress>';
   var xmlOutput = profilesRequest_('put', this.parent.profile.toXmlString().replace(oldEntry, newEntry), linkUrl);
   this.parent.profile = reGetProfileXml_(this.parent.getId(), xmlOutput.getElement());
@@ -60,7 +60,7 @@ addressClass.setAddress = function (text) {
 };
 addressClass.getLabel = function () {
   var label = this.address.getAttribute('rel');
-  if(label == null) return '';
+  if (label == null) return '';
   label = label.getValue();
   label = Frels.address[label] || ContactsApp.Field.WORK_ADDRESS;
   return label;
@@ -72,6 +72,6 @@ addressClass.setLabel = function (label) {
   var newEntry = '<gd:structuredPostalAddress rel="' + rel + '">';
   var xmlOutput = profilesRequest_('put', this.parent.profile.toXmlString().replace(oldEntry, newEntry), linkUrl);
   this.parent.profile = reGetProfileXml_(this.parent.getId(), xmlOutput.getElement());
-  this.address = Xml.parse(this.address.toXmlString().replace(this.address.getAttribute('rel').getValue(),rel)).getElement();
+  this.address = Xml.parse(this.address.toXmlString().replace(this.address.getAttribute('rel').getValue(), rel)).getElement();
   return this;
 };

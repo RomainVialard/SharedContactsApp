@@ -49,8 +49,8 @@ urlClass.getAddress = function () {
   return value;
 };
 urlClass.setAddress = function (text) {
-  if (text === '') {return this.deleteUrlField();}
-  if (this.getAddress() === text) {return this;}
+  if (text === '') { return this.deleteUrlField(); }
+  if (this.getAddress() === text) { return this; }
   var linkUrl = findUrlToUpdateElement_(this.parent.profile);
   var oldEntry = this.url.toXmlString().replace(xmlHeader, '');
   var newEntry = this.url.toXmlString().replace(xmlHeader, '').replace(this.url.getAttribute('href').getValue(), text);
@@ -61,7 +61,7 @@ urlClass.setAddress = function (text) {
 };
 urlClass.getLabel = function () {
   var label = this.url.getAttribute('rel');
-  if(label == null) return '';
+  if (label == null) return '';
   label = label.getValue();
   label = Frels.url[label] || ContactsApp.Field.WORK_WEBSITE;
   return label;

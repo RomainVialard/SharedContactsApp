@@ -48,8 +48,8 @@ customFieldClass.getValue = function () {
   return value;
 };
 customFieldClass.setValue = function (text) {
-debugger;
-  if (this.getValue() === text) {return this;}
+  debugger;
+  if (this.getValue() === text) { return this; }
   text = encodeHtml_(text).replace(/"/g, '&quot;');
   var linkUrl = findUrlToUpdateElement_(this.parent.profile);
   var oldEntry = this.customField.toXmlString().replace(xmlHeader, '');
