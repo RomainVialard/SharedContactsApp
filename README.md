@@ -10,3 +10,7 @@ So if you rely on V8 features for your script, you can currently **not** use thi
 The SharedContactsApp library was created by [Romain Vialard](https://fr.linkedin.com/in/romainvialard) and Peter Herrmann.
 
 [Changelog](https://github.com/RomainVialard/SharedContactsApp/wiki/Change-log)
+
+## Alternative
+If you don't want to build your own app to manage Domain Shared Contacts, you can use this free Sheets addon by 123 Toolkit.<br>
+https://www.123-goo.com/products/toolkit-for-domain-contacts
